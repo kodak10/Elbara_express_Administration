@@ -1,0 +1,73 @@
+class OrderDetail extends StatefulWidget {
+  final DocumentSnapshot orderSnapshot;
+
+  const OrderDetail({
+    Key? key,
+    required this.orderSnapshot,
+  }) : super(key: key);
+
+  @override
+  State<OrderDetail> createState() => _OrderDetailState();
+}
+
+class _OrderDetailState extends State<OrderDetail> {
+  var controller = Get.put(OrdersController());
+  String? selectedValue;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(''),
+      ),
+      body: StreamBuilder(
+        stream: FirebaseFirestore.instance
+            .collection("orders")
+            .doc(widget.orderSnapshot.id)
+            .snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+          if (!snapshot.hasData) {
+            return Center(child: CircularProgressIndicator());
+          } else {
+            var data = snapshot.data!.data() as Map<String, dynamic>;
+            return Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: ListView(
+                children: [
+                  // Your existing widgets
+                ],
+              ),
+            );
+          }
+        },
+      ),
+      bottomNavigationBar: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 40),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CustomButton(
+              height: getVerticalSize(54),
+              width: getHorizontalSize(190),
+              text: "Annuler",
+              variant: ButtonVariant.OutlineDeeppurple600,
+              fontStyle: ButtonFontStyle.SFProTextBold18Deeppurple600,
+              onTap: () {
+                // Add your onTap logic here
+              },
+            ),
+            SizedBox(width: 16),
+            CustomButton(
+              height: getVerticalSize(54),
+              width: getHorizontalSize(190),
+              text: "Affecter",
+              onTap: () {
+                // Add your onTap logic here
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
