@@ -209,6 +209,15 @@ class AppStyle {
     fontWeight: FontWeight.w600,
   );
 
+    static TextStyle txtOutfitBlue = TextStyle(
+    color: ColorConstant.blue700,
+    fontSize: getFontSize(
+      16,
+    ),
+    fontFamily: 'Outfit',
+    fontWeight: FontWeight.w600,
+  );
+
   static TextStyle txtOutfitRegular16Green = TextStyle(
     color: ColorConstant.greenA700,
     fontSize: getFontSize(

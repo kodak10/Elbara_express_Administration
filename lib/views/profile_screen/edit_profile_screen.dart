@@ -45,7 +45,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         Get.back();
                       } else {
                         controller.profileImageLink =
-                            controller.snapshotData['image'];
+                            controller.snapshotData['photoUrl'];
                       }
 
                       // check old password is same in data base
@@ -88,8 +88,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               // if data image url and controller path is empty
 
               Hero(
-                tag: controller.snapshotData['image'],
-                child: controller.snapshotData['image'] == '' &&
+                tag: controller.snapshotData['photoUrl'],
+                child: controller.snapshotData['photoUrl'] == '' &&
                         controller.profileImagePath.isEmpty
                     ? Image.asset(icProfile, width: 100, fit: BoxFit.contain)
                         .box
@@ -97,9 +97,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         .clip(Clip.antiAlias)
                         .make()
                     // if data is not empty but controller path is empty
-                    : controller.snapshotData['image'] != '' &&
+                    : controller.snapshotData['photoUrl'] != '' &&
                             controller.profileImagePath.isEmpty
-                        ? Image.network(controller.snapshotData['image'],
+                        ? Image.network(controller.snapshotData['photoUrl'],
                                 width: 100, fit: BoxFit.cover)
                             .box
                             .roundedFull

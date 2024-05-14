@@ -89,7 +89,7 @@ class HomeScreen extends StatelessWidget {
                   },
                 ),
                 StreamBuilder(
-                  stream: FirebaseFirestore.instance.collection("orders").snapshots(),
+                  stream: FirebaseFirestore.instance.collection("orders").where('paymentStatus', isEqualTo: 'payer' ).snapshots(),
                   builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
                     if (!snapshot.hasData) {
                       return loadingIndicator();

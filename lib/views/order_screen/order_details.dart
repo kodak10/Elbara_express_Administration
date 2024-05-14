@@ -1,4 +1,6 @@
 // ignore: depend_on_referenced_packages
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:qaswa_admin/const/app_style.dart';
@@ -12,6 +14,7 @@ import '../../controller/order_controller.dart';
 import '../widgets/our_button.dart';
 import '../widgets/test_style.dart';
 import 'components/order_place.dart';
+import 'package:http/http.dart' as http;
 
 class OrderDetail extends StatefulWidget {
   final dynamic data;
@@ -34,6 +37,50 @@ class _OrderDetailState extends State<OrderDetail> {
   String? selectedDriverPhotoUrl; // URL de la photo du livreur sélectionné
   String selectedDriverName = "Choisir un livreur";
   late String deliveryStatus = "";
+  late String paymentRef = "";
+
+  String? orderStatus;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchOrderStatus();
+  }
+
+  Future<void> fetchOrderStatus() async {
+    final url =
+        Uri.parse('https://app.paydunya.com/api/v1/dmp-api/check-status');
+    final headers = {
+      'Content-Type': 'application/json',
+      'PAYDUNYA-MASTER-KEY': 'fhRrUGWg-Upkg-0r3x-Z7DI-d8fR0aIHgxc2',
+      'PAYDUNYA-PRIVATE-KEY': 'live_private_tvQxERrcZFOVXgpi3NyUckcWDDL',
+      'PAYDUNYA-TOKEN': 'vI7BDJAJvpWDY8Y4rjBL',
+    };
+
+    final DocumentSnapshot snapshot = await FirebaseFirestore.instance
+        .collection("orders")
+        .doc(widget.orderSnapshot
+            .id) // Utilisation de l'ID de la commande pour obtenir le document
+        .get();
+
+    final String paymentRef =
+        snapshot.get('paymentRef'); // Extrait la valeur du champ paymentRef
+
+    final body = jsonEncode({'reference_number': paymentRef});
+
+    final response = await http.post(url, headers: headers, body: body);
+    if (response.statusCode == 200) {
+      print('paymentRef: $paymentRef');
+      final responseData = jsonDecode(response.body);
+      setState(() {
+        orderStatus = responseData['status'];
+      });
+    } else {
+      // Gérer les erreurs ici, par exemple afficher un message d'erreur à l'utilisateur
+      print(
+          'Erreur lors de la récupération du statut de la commande: ${response.statusCode}');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,6 +100,7 @@ class _OrderDetailState extends State<OrderDetail> {
             } else {
               var data = snapshot.data!.data() as Map<String, dynamic>;
               deliveryStatus = data['deliveryStatus'];
+              paymentRef = data['paymentRef'];
               print('valeur: $deliveryStatus');
               return Padding(
                   //body: Container(
@@ -117,10 +165,26 @@ class _OrderDetailState extends State<OrderDetail> {
                             color: ColorConstant.gray300),
                         Padding(
                             padding: getPadding(top: 32),
-                            child: Text("Details de la commande".tr,
+                            child: Text("Détails de la commande".tr,
                                 overflow: TextOverflow.ellipsis,
                                 textAlign: TextAlign.left,
                                 style: AppStyle.txtSFProTextBold20)),
+                        Padding(
+                            padding: getPadding(top: 21),
+                            child: Text("Date de commande".tr,
+                                overflow: TextOverflow.ellipsis,
+                                textAlign: TextAlign.left,
+                                style: AppStyle.txtBodyGray600)),
+                        Padding(
+                            padding: getPadding(top: 10, bottom: 0),
+                            child: Text(
+                                data['dateRegister']
+                                    .toDate()
+                                    .toString(), // Convert Timestamp to DateTime, then to String
+                                overflow: TextOverflow.ellipsis,
+                                textAlign: TextAlign.left,
+                                style: AppStyle.txtBody)),
+
                         Padding(
                             padding: getPadding(top: 22),
                             child: Text("Référence du colis".tr,
@@ -135,7 +199,7 @@ class _OrderDetailState extends State<OrderDetail> {
                                 style: AppStyle.txtBody)),
                         Padding(
                             padding: getPadding(top: 22),
-                            child: Text("Type de course".tr,
+                            child: Text("Type de service".tr,
                                 overflow: TextOverflow.ellipsis,
                                 textAlign: TextAlign.left,
                                 style: AppStyle.txtBodyGray600)),
@@ -159,7 +223,7 @@ class _OrderDetailState extends State<OrderDetail> {
                                 style: AppStyle.txtBody)),
                         Padding(
                             padding: getPadding(top: 22),
-                            child: Text("Information supplémentaire".tr,
+                            child: Text("Informations supplémentaires".tr,
                                 overflow: TextOverflow.ellipsis,
                                 textAlign: TextAlign.left,
                                 style: AppStyle.txtBodyGray600)),
@@ -169,6 +233,15 @@ class _OrderDetailState extends State<OrderDetail> {
                                 overflow: TextOverflow.ellipsis,
                                 textAlign: TextAlign.left,
                                 style: AppStyle.txtBody)),
+
+                         Divider(
+                            height: getVerticalSize(1),
+                            thickness: getVerticalSize(1),
+                            color: ColorConstant.gray300),
+                        SizedBox(
+                          height: getVerticalSize(8),
+                        ),
+                        
                         Padding(
                             padding: getPadding(top: 22),
                             child: Text("Métode de payement".tr,
@@ -182,17 +255,40 @@ class _OrderDetailState extends State<OrderDetail> {
                                 textAlign: TextAlign.left,
                                 style: AppStyle.txtBody)),
                         Padding(
-                            padding: getPadding(top: 22),
-                            child: Text("Statut de payement".tr,
+                          padding: getPadding(top: 10, bottom: 0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Statut de paiement",
                                 overflow: TextOverflow.ellipsis,
                                 textAlign: TextAlign.left,
-                                style: AppStyle.txtBodyGray600)),
-                        Padding(
-                            padding: getPadding(top: 10, bottom: 0),
-                            child: Text("........",
-                                overflow: TextOverflow.ellipsis,
-                                textAlign: TextAlign.left,
-                                style: AppStyle.txtBody)),
+                                style: AppStyle.txtBodyGray600, // Conservez le style spécifié
+                              ),
+                              SizedBox(height: 10),
+                              orderStatus != null
+                                  ?  Text( 
+                                      orderStatus == "canceled" 
+                                        ? "Annulé" 
+                                        : orderStatus == "pending" 
+                                          ? "En attente" 
+                                          : orderStatus == "completed" 
+                                            ? "Payer" 
+                                            : "Erreur", 
+                                      style: orderStatus == "canceled" 
+                                        ? AppStyle.txtOutfitRegular14Red // Texte bleu pour "onTheWay" 
+                                        : orderStatus == "pending" 
+                                          ? AppStyle.txtOutfitRegular14Amber // Texte jaune pour "pending" 
+                                          : orderStatus == "completed" 
+                                            ? AppStyle.txtOutfitRegular14Green // Texte vert pour "delivered" 
+                                            : AppStyle.txtOutfitBlue, // Texte rouge par défaut 
+                                    ) 
+                                  : CircularProgressIndicator(), // Affiche un indicateur de chargement tant que le statut n'est pas récupéré
+                            ],
+                          ),
+                        ),
+
+
                         Padding(
                             padding: getPadding(top: 20),
                             child: Text("Status de la livraison".tr,
@@ -200,38 +296,31 @@ class _OrderDetailState extends State<OrderDetail> {
                                 textAlign: TextAlign.left,
                                 style: AppStyle.txtBodyGray600)),
                         Padding(
-                            padding: getPadding(top: 10),
-                            child: Text(
-                              data['deliveryStatus'],
-                              style: data['deliveryStatus'].toLowerCase() ==
-                                      "delivered"
-                                  ? AppStyle.txtOutfitRegular16Green
-                                  : data['deliveryStatus'].toLowerCase() ==
-                                          "pending"
-                                      ? AppStyle.txtOutfitRegular16Amber
-                                      : AppStyle.txtOutfitRegular16Red,
-                            )
-                            //
-                            // Text("lbl_in_transit".tr,
-                            //     overflow: TextOverflow.ellipsis,
-                            //     textAlign: TextAlign.left,
-                            //     style: AppStyle.txtSFProTextSemibold16)
-                            ),
-                        Padding(
-                            padding: getPadding(top: 21),
-                            child: Text("Date de commande".tr,
-                                overflow: TextOverflow.ellipsis,
-                                textAlign: TextAlign.left,
-                                style: AppStyle.txtBodyGray600)),
-                        Padding(
-                            padding: getPadding(top: 10, bottom: 0),
-                            child: Text(
-                                data['dateRegister']
-                                    .toDate()
-                                    .toString(), // Convert Timestamp to DateTime, then to String
-                                overflow: TextOverflow.ellipsis,
-                                textAlign: TextAlign.left,
-                                style: AppStyle.txtBody)),
+                          padding: getPadding(top: 10),
+                          child: Text(
+                            data['deliveryStatus'] == "canceled"
+                                ? "Annulé"
+                                : data['deliveryStatus'] == "pending"
+                                    ? "En attente"
+                                    : data['deliveryStatus'] == "delivered"
+                                        ? "Livré"
+                                        : "En transit",
+                            style: data['deliveryStatus'] == "canceled"
+                                ? AppStyle
+                                    .txtOutfitRegular14Red // Texte bleu pour "onTheWay"
+                                : data['deliveryStatus'] == "pending"
+                                    ? AppStyle
+                                        .txtOutfitRegular14Amber // Texte jaune pour "pending"
+                                    : data['deliveryStatus'] == "delivered"
+                                        ? AppStyle
+                                            .txtOutfitRegular14Green // Texte vert pour "delivered"
+                                        : AppStyle
+                                            .txtOutfitBlue, // Texte rouge par défaut
+                          ),
+                        ),
+                        SizedBox(
+                          height: getVerticalSize(8),
+                        ),
                         SizedBox(
                           height: getVerticalSize(8),
                         ),
@@ -242,12 +331,12 @@ class _OrderDetailState extends State<OrderDetail> {
                         SizedBox(
                           height: getVerticalSize(8),
                         ),
-                        //  Padding(
-                        //     padding: getPadding(top: 21),
-                        //     child: Text("Nom du livreur".tr,
-                        //         overflow: TextOverflow.ellipsis,
-                        //         textAlign: TextAlign.left,
-                        //         style: AppStyle.txtBodyGray600)),
+                         Padding(
+                            padding: getPadding(top: 21),
+                            child: Text("Nom du livreur".tr,
+                                overflow: TextOverflow.ellipsis,
+                                textAlign: TextAlign.left,
+                                style: AppStyle.txtBodyGray600)),
                         //      Padding(
                         // padding: getPadding(top: 10, bottom: 0),
                         // child: StreamBuilder<DocumentSnapshot>(
@@ -277,6 +366,7 @@ class _OrderDetailState extends State<OrderDetail> {
                         //   },
                         // ),
                         //      )
+                        
                       ]));
             }
           },
@@ -328,7 +418,7 @@ class _OrderDetailState extends State<OrderDetail> {
             List<DropdownMenuItem<String>> items = [];
             snapshot.data!.docs.forEach((DocumentSnapshot doc) {
               String userId = doc.id;
-              String userName = doc['name'];
+              String userName = doc['displayName'];
               items.add(DropdownMenuItem<String>(
                 value: userId,
                 child: Text(userName),
@@ -418,9 +508,9 @@ class _OrderDetailState extends State<OrderDetail> {
       if (documentSnapshot.exists) {
         setState(() {
           selectedDriverName =
-              documentSnapshot['name']; // Récupérer le nom du livreur
+              documentSnapshot['displayName']; // Récupérer le nom du livreur
           selectedDriverPhotoUrl = documentSnapshot[
-              'image']; // Récupérer l'URL de l'image du livreur
+              'photoURL']; // Récupérer l'URL de l'image du livreur
         });
       } else {
         print('Le document n\'existe pas');

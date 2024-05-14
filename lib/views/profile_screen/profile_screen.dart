@@ -46,8 +46,8 @@ class SettingsScreen extends StatelessWidget {
                   //user detail section
                   ListTile(
                     leading: Hero(
-                      tag: controller.snapshotData['image'],
-                      child: controller.snapshotData['image'] == ''
+                      tag: controller.snapshotData['photoUrl'],
+                      child: controller.snapshotData['photoUrl'] == ''
                           ? Image.asset(icProfile, width: 100, fit: BoxFit.fill)
                               .box
                               .roundedFull
@@ -56,19 +56,19 @@ class SettingsScreen extends StatelessWidget {
                           : CachedNetworkImage(
                               placeholder: (context, url) => loadingIndicator(),
                               imageUrl:
-                                  "${controller.snapshotData['image']}",
+                                  "${controller.snapshotData['photoUrl']}",
                               width: 100,
                             ).box.roundedFull.clip(Clip.antiAlias).make(),
                     ),
                     title: boldText(
-                        text: "${controller.snapshotData['name']}"),
+                        text: "${controller.snapshotData['displayName']}"),
                     subtitle:
                         normalText(text: "${controller.snapshotData['email']}"),
                     trailing: IconButton(
                         onPressed: () {
                           Get.to(
                             () => EditProfileScreen(
-                              username: controller.snapshotData['name'],
+                              username: controller.snapshotData['displayName'],
                             ),
                           );
                         },
