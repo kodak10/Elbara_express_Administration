@@ -12,7 +12,9 @@ AppBar appbarWidget(title) {
     actions: [
       Center(
         child: normalText(
-            text: intl.DateFormat('EEEEEEEE,d MMM,' 'yy', 'fr').format(DateTime.now()),
+            //text: intl.DateFormat('EEEEEEEE,d MMM,' 'yy', 'fr').format(DateTime.now()),
+            text: intl.DateFormat('EEEE, d MMM, yy', 'fr').format(DateTime.now()),
+
             color: purpleColor),
       ),
       10.widthBox,

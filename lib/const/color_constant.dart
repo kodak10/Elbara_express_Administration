@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:qaswa_admin/const/size_utils.dart';
+import 'package:elbaraexpress_admin/const/size_utils.dart';
 
 class ColorConstant {
   static Color gray600 = fromHex('#6b6b6b');
@@ -58,5 +58,3 @@ closeApp() {
     SystemNavigator.pop();
   });
 }
-
-

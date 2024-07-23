@@ -1,6 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:qaswa_admin/views/order_screen/order_details.dart';
+import 'package:elbaraexpress_admin/views/order_screen/order_details.dart';
 //
 import '../../const/const.dart';
 import '../../services/store_services.dart';
@@ -13,11 +13,8 @@ import '../widgets/test_style.dart';
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
-
-
   @override
   Widget build(BuildContext context) {
-    
     return Scaffold(
       appBar: appbarWidget(dashboard),
       body: SingleChildScrollView(
@@ -29,9 +26,13 @@ class HomeScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 StreamBuilder(
-                  stream: FirebaseFirestore.instance.collection("orders").where('deliveryStatus',isEqualTo: "pending").snapshots(),
-                  builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                     if (!snapshot.hasData) {
+                  stream: FirebaseFirestore.instance
+                      .collection("orders")
+                      .where('deliveryStatus', isEqualTo: "pending")
+                      .snapshots(),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<QuerySnapshot> snapshot) {
+                    if (!snapshot.hasData) {
                       return loadingIndicator();
                     } else {
                       var data = snapshot.data!.docs;
@@ -43,12 +44,16 @@ class HomeScreen extends StatelessWidget {
                                 count: '${data.length}',
                                 icon: icProducts),
                           ));
-                     }
+                    }
                   },
                 ),
                 StreamBuilder(
-                  stream: FirebaseFirestore.instance.collection("orders").where('deliveryStatus', isEqualTo: "onTheWay").snapshots(),
-                  builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                  stream: FirebaseFirestore.instance
+                      .collection("orders")
+                      .where('deliveryStatus', isEqualTo: "onTheWay")
+                      .snapshots(),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<QuerySnapshot> snapshot) {
                     if (!snapshot.hasData) {
                       return loadingIndicator();
                     } else {
@@ -71,8 +76,12 @@ class HomeScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 StreamBuilder(
-                  stream: FirebaseFirestore.instance.collection("orders").where('deliveryStatus', isEqualTo: "delivered").snapshots(),
-                  builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                  stream: FirebaseFirestore.instance
+                      .collection("orders")
+                      .where('deliveryStatus', isEqualTo: "delivered")
+                      .snapshots(),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<QuerySnapshot> snapshot) {
                     if (!snapshot.hasData) {
                       return loadingIndicator();
                     } else {
@@ -89,8 +98,12 @@ class HomeScreen extends StatelessWidget {
                   },
                 ),
                 StreamBuilder(
-                  stream: FirebaseFirestore.instance.collection("orders").where('paymentStatus', isEqualTo: 'payer' ).snapshots(),
-                  builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                  stream: FirebaseFirestore.instance
+                      .collection("orders")
+                      .where('paymentStatus', isEqualTo: 'payer')
+                      .snapshots(),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<QuerySnapshot> snapshot) {
                     if (!snapshot.hasData) {
                       return loadingIndicator();
                     } else {
@@ -108,23 +121,27 @@ class HomeScreen extends StatelessWidget {
                 ),
               ],
             ),
-           10.heightBox,
-          const Divider(),
-          10.heightBox,
-          Center(
-            child: boldText(
-              text: attentes,
-              color: fontGrey,
-              size: 16.0,
+            10.heightBox,
+            const Divider(),
+            10.heightBox,
+            Center(
+              child: boldText(
+                text: attentes,
+                color: fontGrey,
+                size: 16.0,
+              ),
             ),
-          ),
-          20.heightBox,
+            20.heightBox,
 
             // StreamBuilder for the last section
             StreamBuilder(
-              stream: FirebaseFirestore.instance.collection("orders").where('deliveryStatus',isEqualTo: "pending").snapshots(),
+              stream: FirebaseFirestore.instance
+                  .collection("orders")
+                  .where('deliveryStatus', isEqualTo: "pending")
+                  .snapshots(),
               //stream: FirebaseFirestore.instance.collection("orders").snapshots(),
-              builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+              builder: (BuildContext context,
+                  AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (!snapshot.hasData) {
                   return loadingIndicator();
                 } else {
@@ -139,13 +156,15 @@ class HomeScreen extends StatelessWidget {
                         (index) => data[index]['orderId'].isEmpty
                             ? const SizedBox()
                             : Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10.0),
                                 child: Card(
                                   child: ListTile(
                                     onTap: () {
                                       Get.to(
                                         () => OrderDetail(
-                                          orderSnapshot: data[index], // Passer orderSnapshot ici
+                                          orderSnapshot: data[
+                                              index], // Passer orderSnapshot ici
                                         ),
                                         transition: Transition.rightToLeft,
                                       );
@@ -159,8 +178,12 @@ class HomeScreen extends StatelessWidget {
                                       text: "\$ ${data[index]['userNote']}",
                                       color: darkGrey,
                                     ),
-                                    trailing: const Icon(Icons.arrow_forward_ios),
-                                    leading: const Icon(Icons.account_circle_rounded, size: 30,),
+                                    trailing:
+                                        const Icon(Icons.arrow_forward_ios),
+                                    leading: const Icon(
+                                      Icons.account_circle_rounded,
+                                      size: 30,
+                                    ),
                                     contentPadding: const EdgeInsets.all(10),
                                     dense: true,
                                   ),
@@ -176,6 +199,5 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
     );
-
   }
 }

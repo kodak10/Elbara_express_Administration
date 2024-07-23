@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:qaswa_admin/const/color_constant.dart';
-import 'package:qaswa_admin/const/size_utils.dart';
+import 'package:elbaraexpress_admin/const/color_constant.dart';
+import 'package:elbaraexpress_admin/const/size_utils.dart';
 
 class AppStyle {
   static TextStyle txtSFProTextBold32 = TextStyle(
@@ -209,7 +209,7 @@ class AppStyle {
     fontWeight: FontWeight.w600,
   );
 
-    static TextStyle txtOutfitBlue = TextStyle(
+  static TextStyle txtOutfitBlue = TextStyle(
     color: ColorConstant.blue700,
     fontSize: getFontSize(
       16,

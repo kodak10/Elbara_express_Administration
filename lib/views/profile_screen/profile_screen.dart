@@ -1,5 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:elbaraexpress_admin/views/codePromo/PromoCodeManagementScreen.dart';
+import 'package:elbaraexpress_admin/views/compagnies_screen/CompagnieCreateScreen.dart';
+import 'package:elbaraexpress_admin/views/compagnies_screen/CompagnieListScreen.dart';
+import 'package:elbaraexpress_admin/views/gare_screen/GareListScreen.dart';
+import 'package:elbaraexpress_admin/views/livreur_screen/LivreurListScreen.dart';
 //
 import '../../const/const.dart';
 import '../../controller/auth_controller.dart';
@@ -46,8 +51,8 @@ class SettingsScreen extends StatelessWidget {
                   //user detail section
                   ListTile(
                     leading: Hero(
-                      tag: controller.snapshotData['photoUrl'],
-                      child: controller.snapshotData['photoUrl'] == ''
+                      tag: controller.snapshotData['photoURL'],
+                      child: controller.snapshotData['photoURL'] == ''
                           ? Image.asset(icProfile, width: 100, fit: BoxFit.fill)
                               .box
                               .roundedFull
@@ -56,7 +61,7 @@ class SettingsScreen extends StatelessWidget {
                           : CachedNetworkImage(
                               placeholder: (context, url) => loadingIndicator(),
                               imageUrl:
-                                  "${controller.snapshotData['photoUrl']}",
+                                  "${controller.snapshotData['photoURL']}",
                               width: 100,
                             ).box.roundedFull.clip(Clip.antiAlias).make(),
                     ),
@@ -85,13 +90,16 @@ class SettingsScreen extends StatelessWidget {
                           onTap: () {
                             switch (index) {
                               case 0:
-                                //Get.to(() => const ShopSettingScreen());
+                                Get.to(() => CompagnieListScreen());
                                 break;
                               case 1:
-                                //Get.to(() => const MessageScreen());
+                                Get.to(() => GareListScreen());
                                 break;
-                                case 2:
-                                //Get.to(() => const MessageScreen());
+                              case 2:
+                                Get.to(() => LivreurListScreen());
+                                break;
+                              case 3:
+                                Get.to(() => PromoCodeManagementScreen());
                                 break;
                               default:
                             }

@@ -3,11 +3,11 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart' as intl;
-import 'package:qaswa_admin/const/app_style.dart';
-import 'package:qaswa_admin/const/color_constant.dart';
-import 'package:qaswa_admin/const/size_utils.dart';
-import 'package:qaswa_admin/views/widgets/appbar_widget.dart';
-import 'package:qaswa_admin/views/widgets/custom_button.dart';
+import 'package:elbaraexpress_admin/const/app_style.dart';
+import 'package:elbaraexpress_admin/const/color_constant.dart';
+import 'package:elbaraexpress_admin/const/size_utils.dart';
+import 'package:elbaraexpress_admin/views/widgets/appbar_widget.dart';
+import 'package:elbaraexpress_admin/views/widgets/custom_button.dart';
 //
 import '../../const/const.dart';
 import '../../controller/order_controller.dart';
@@ -15,6 +15,8 @@ import '../widgets/our_button.dart';
 import '../widgets/test_style.dart';
 import 'components/order_place.dart';
 import 'package:http/http.dart' as http;
+
+DateTime date = DateTime.now();
 
 class OrderDetail extends StatefulWidget {
   final dynamic data;
@@ -70,7 +72,6 @@ class _OrderDetailState extends State<OrderDetail> {
 
     final response = await http.post(url, headers: headers, body: body);
     if (response.statusCode == 200) {
-      print('paymentRef: $paymentRef');
       final responseData = jsonDecode(response.body);
       setState(() {
         orderStatus = responseData['status'];
@@ -101,7 +102,6 @@ class _OrderDetailState extends State<OrderDetail> {
               var data = snapshot.data!.data() as Map<String, dynamic>;
               deliveryStatus = data['deliveryStatus'];
               paymentRef = data['paymentRef'];
-              print('valeur: $deliveryStatus');
               return Padding(
                   //body: Container(
                   padding: getPadding(top: 24, bottom: 8),
@@ -178,7 +178,7 @@ class _OrderDetailState extends State<OrderDetail> {
                         Padding(
                             padding: getPadding(top: 10, bottom: 0),
                             child: Text(
-                                data['dateRegister']
+                                data['date']
                                     .toDate()
                                     .toString(), // Convert Timestamp to DateTime, then to String
                                 overflow: TextOverflow.ellipsis,
@@ -234,17 +234,17 @@ class _OrderDetailState extends State<OrderDetail> {
                                 textAlign: TextAlign.left,
                                 style: AppStyle.txtBody)),
 
-                         Divider(
+                        Divider(
                             height: getVerticalSize(1),
                             thickness: getVerticalSize(1),
                             color: ColorConstant.gray300),
                         SizedBox(
                           height: getVerticalSize(8),
                         ),
-                        
+
                         Padding(
                             padding: getPadding(top: 22),
-                            child: Text("Métode de payement".tr,
+                            child: Text("Méthode de payement".tr,
                                 overflow: TextOverflow.ellipsis,
                                 textAlign: TextAlign.left,
                                 style: AppStyle.txtBodyGray600)),
@@ -263,31 +263,35 @@ class _OrderDetailState extends State<OrderDetail> {
                                 "Statut de paiement",
                                 overflow: TextOverflow.ellipsis,
                                 textAlign: TextAlign.left,
-                                style: AppStyle.txtBodyGray600, // Conservez le style spécifié
+                                style: AppStyle
+                                    .txtBodyGray600, // Conservez le style spécifié
                               ),
                               SizedBox(height: 10),
                               orderStatus != null
-                                  ?  Text( 
-                                      orderStatus == "canceled" 
-                                        ? "Annulé" 
-                                        : orderStatus == "pending" 
-                                          ? "En attente" 
-                                          : orderStatus == "completed" 
-                                            ? "Payer" 
-                                            : "Erreur", 
-                                      style: orderStatus == "canceled" 
-                                        ? AppStyle.txtOutfitRegular14Red // Texte bleu pour "onTheWay" 
-                                        : orderStatus == "pending" 
-                                          ? AppStyle.txtOutfitRegular14Amber // Texte jaune pour "pending" 
-                                          : orderStatus == "completed" 
-                                            ? AppStyle.txtOutfitRegular14Green // Texte vert pour "delivered" 
-                                            : AppStyle.txtOutfitBlue, // Texte rouge par défaut 
-                                    ) 
+                                  ? Text(
+                                      orderStatus == "canceled"
+                                          ? "Annulé"
+                                          : orderStatus == "pending"
+                                              ? "En attente"
+                                              : orderStatus == "completed"
+                                                  ? "Payer"
+                                                  : "Erreur",
+                                      style: orderStatus == "canceled"
+                                          ? AppStyle
+                                              .txtOutfitRegular14Red // Texte bleu pour "onTheWay"
+                                          : orderStatus == "pending"
+                                              ? AppStyle
+                                                  .txtOutfitRegular14Amber // Texte jaune pour "pending"
+                                              : orderStatus == "completed"
+                                                  ? AppStyle
+                                                      .txtOutfitRegular14Green // Texte vert pour "delivered"
+                                                  : AppStyle
+                                                      .txtOutfitBlue, // Texte rouge par défaut
+                                    )
                                   : CircularProgressIndicator(), // Affiche un indicateur de chargement tant que le statut n'est pas récupéré
                             ],
                           ),
                         ),
-
 
                         Padding(
                             padding: getPadding(top: 20),
@@ -331,7 +335,7 @@ class _OrderDetailState extends State<OrderDetail> {
                         SizedBox(
                           height: getVerticalSize(8),
                         ),
-                         Padding(
+                        Padding(
                             padding: getPadding(top: 21),
                             child: Text("Nom du livreur".tr,
                                 overflow: TextOverflow.ellipsis,
@@ -366,7 +370,6 @@ class _OrderDetailState extends State<OrderDetail> {
                         //   },
                         // ),
                         //      )
-                        
                       ]));
             }
           },
@@ -470,12 +473,14 @@ class _OrderDetailState extends State<OrderDetail> {
                           .update({
                         'deliveryId': selectedValue,
                         'deliveryStatus': 'onTheWay',
+                        'order_on_delivery': true,
+                        'order_on_delivery_date': date,
                       }).then((_) {
                         // Afficher un message de succès
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text(
-                                'Livreur attribué avec succès à la commande.'),
+                                'Commande attribuée avec succès au livreur.'),
                           ),
                         );
                       }).catchError((error) {
@@ -483,7 +488,7 @@ class _OrderDetailState extends State<OrderDetail> {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
                             content: Text(
-                                'Une erreur s\'est produite lors de l\'attribution du livreur : $error'),
+                                'Une erreur s\'est produite lors de l\'attribution de la commande au livreur livreur : $error'),
                           ),
                         );
                       });

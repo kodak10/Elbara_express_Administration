@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:qaswa_admin/const/color_constant.dart';
-import 'package:qaswa_admin/const/size_utils.dart';
+import 'package:elbaraexpress_admin/const/color_constant.dart';
+import 'package:elbaraexpress_admin/const/size_utils.dart';
 
 // ignore: must_be_immutable
 class CustomButton extends StatelessWidget {
@@ -150,8 +150,6 @@ class CustomButton extends StatelessWidget {
         //return ColorConstant.deepPurple600;
         return const Color(0xFFffba03);
     }
-    
-
   }
 
   _setTextButtonBorder() {

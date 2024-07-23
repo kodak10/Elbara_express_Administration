@@ -1,4 +1,4 @@
-import 'package:qaswa_admin/const/const.dart';
+import 'package:elbaraexpress_admin/const/const.dart';
 
 class StoreServices {
   static getProfile(uid) {
@@ -28,18 +28,15 @@ class StoreServices {
   }
 
   // get all orders
-static getAllOrders(uid) {
-    return firestore
-        .collection(ordersCollection)
-        .snapshots();
+  static getAllOrders(uid) {
+    return firestore.collection(ordersCollection).snapshots();
   }
-
 
   //// arrayContains  only use for list  or aray
   static getOrders(uid) {
     return firestore
         .collection(ordersCollection)
-        .where('userId', isEqualTo:  currentUser!.uid)
+        .where('userId', isEqualTo: currentUser!.uid)
         .snapshots();
   }
 
