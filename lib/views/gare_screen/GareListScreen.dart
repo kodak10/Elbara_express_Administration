@@ -43,7 +43,7 @@ class GareListScreen extends StatelessWidget {
               return ListTile(
                 title: Text(gare['nom'], style: TextStyle(color: Colors.white)), // Texte en blanc
               
-                subtitle: Text(gare['compagnie']),
+                subtitle: Text(gare['compagnie'], style: TextStyle(color: Colors.white)),
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
