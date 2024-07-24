@@ -25,7 +25,7 @@ class CompagnieListScreen extends StatelessWidget {
         ],
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance.collection('compagnie').snapshots(),
+        stream: FirebaseFirestore.instance.collection('compagnie').orderBy('name').snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Center(child: Text("Erreur: ${snapshot.error}"));
