@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -22,45 +23,35 @@ class _CreateLivreurScreenState extends State<CreateLivreurScreen> {
   final ImagePicker _picker = ImagePicker();
   XFile? _imageFile;
 
-  Future<void> _pickImage() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      setState(() {
-        _imageFile = pickedFile;
-      });
-    }
-  }
+ Future<void> _addLivreur() async {
+  isLoading(true);
+  try {
+    // Créez un utilisateur dans Firebase Authentication
+    UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      email: _emailController.text,
+      password: 'ElbaraLivreur',  // Mot de passe par défaut 
+    );
 
-  Future<String?> _uploadImage() async {
-    if (_imageFile != null) {
-      final storageRef = FirebaseStorage.instance
-          .ref()
-          .child('user_images/${_imageFile!.name}');
-      final uploadTask = storageRef.putFile(File(_imageFile!.path));
-      final snapshot = await uploadTask.whenComplete(() {});
-      return await snapshot.ref.getDownloadURL();
-    }
-    return null;
-  }
+    // Référence du document avec ID généré automatiquement
+    DocumentReference docRef = FirebaseFirestore.instance.collection('users').doc();
 
-  Future<void> _addLivreur() async {
-    isLoading(true);
-    try {
-      final imageUrl = await _uploadImage();
-      await FirebaseFirestore.instance.collection('users').add({
-        'displayName': _nameController.text,
-        'email': _emailController.text,
-        'phoneNumber': _phoneController.text,
-        'photoURL': imageUrl ?? '',
-        'role': 'livreur',
-      });
-      Get.snackbar('Succès', 'Livreur ajouté');
-    } catch (error) {
-      Get.snackbar('Erreur', 'Erreur: $error');
-    } finally {
-      isLoading(false);
-    }
+    await docRef.set({
+      'displayName': _nameController.text,
+      'email': _emailController.text,
+      'photoURL': 'https://firebasestorage.googleapis.com/v0/b/elbaraexpress-9b834.appspot.com/o/images%2Fuser.png?alt=media&token=d2065aab-9369-4c90-9438-f03c15a84fca',
+      'role': 'livreur',
+      'id': docRef.id, // Ajouter l'ID du document
+    });
+
+    Get.snackbar('Succès', 'Livreur ajouté');
+  } catch (error) {
+    Get.snackbar('Erreur', 'Erreur: $error');
+  } finally {
+    isLoading(false);
   }
+}
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +59,7 @@ class _CreateLivreurScreenState extends State<CreateLivreurScreen> {
       () => Scaffold(
         backgroundColor: purpleColor,
         appBar: AppBar(
-          title: boldText(text: 'Créer un Livreur', size: 16.0),
+          title: boldText(text: 'Ajouter un Livreur', size: 16.0),
           actions: [
             isLoading.value
                 ? loadingIndicator(circleColor: Colors.white)
@@ -82,17 +73,17 @@ class _CreateLivreurScreenState extends State<CreateLivreurScreen> {
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
-              GestureDetector(
-                onTap: _pickImage,
-                child: Container(
-                  height: 150,
-                  width: double.infinity,
-                  color: Colors.grey[300],
-                  child: _imageFile == null
-                      ? Center(child: Text('Sélectionner une image'))
-                      : Image.file(File(_imageFile!.path), fit: BoxFit.cover),
-                ),
-              ),
+              // GestureDetector(
+              //   onTap: _pickImage,
+              //   child: Container(
+              //     height: 150,
+              //     width: double.infinity,
+              //     color: Colors.grey[300],
+              //     child: _imageFile == null
+              //         ? Center(child: Text('Sélectionner une image'))
+              //         : Image.file(File(_imageFile!.path), fit: BoxFit.cover),
+              //   ),
+              // ),
               customTextField(
                 label: 'Nom',
                 hint: 'Entrez le nom',

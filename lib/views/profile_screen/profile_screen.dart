@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:elbaraexpress_admin/views/codePromo/PromoCodeManagementScreen.dart';
+import 'package:elbaraexpress_admin/views/codePromo/CreatePromoCodeScreen.dart';
+import 'package:elbaraexpress_admin/views/codePromo/ListPromoCodeScreen.dart';
 import 'package:elbaraexpress_admin/views/compagnies_screen/CompagnieCreateScreen.dart';
 import 'package:elbaraexpress_admin/views/compagnies_screen/CompagnieListScreen.dart';
 import 'package:elbaraexpress_admin/views/gare_screen/GareListScreen.dart';
 import 'package:elbaraexpress_admin/views/livreur_screen/LivreurListScreen.dart';
-//
 import '../../const/const.dart';
 import '../../controller/auth_controller.dart';
 import '../../controller/profile_controller.dart';
@@ -43,6 +43,8 @@ class SettingsScreen extends StatelessWidget {
               (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (!snapshot.hasData) {
               return loadingIndicator(circleColor: white);
+            } else if (snapshot.data!.docs.isEmpty) {
+              return Center(child: Text("Aucun profil trouvé"));
             } else {
               controller.snapshotData = snapshot.data!.docs[0];
 
@@ -66,9 +68,9 @@ class SettingsScreen extends StatelessWidget {
                             ).box.roundedFull.clip(Clip.antiAlias).make(),
                     ),
                     title: boldText(
-                        text: "${controller.snapshotData['displayName']}"),
+                        text: "${controller.snapshotData['displayName']}", color: Colors.white),
                     subtitle:
-                        normalText(text: "${controller.snapshotData['email']}"),
+                        normalText(text: "${controller.snapshotData['email']}", color: Colors.white),
                     trailing: IconButton(
                         onPressed: () {
                           Get.to(
@@ -99,7 +101,7 @@ class SettingsScreen extends StatelessWidget {
                                 Get.to(() => LivreurListScreen());
                                 break;
                               case 3:
-                                Get.to(() => PromoCodeManagementScreen());
+                                Get.to(() => ListPromoCodesScreen());
                                 break;
                               default:
                             }
@@ -108,7 +110,7 @@ class SettingsScreen extends StatelessWidget {
                             profileButtonIcons[index],
                             color: white,
                           ),
-                          title: normalText(text: profileButtonTitles[index]),
+                          title: normalText(text: profileButtonTitles[index], color: Colors.white),
                         ),
                       ),
                     ),

@@ -40,9 +40,9 @@ class HomeScreen extends StatelessWidget {
                           padding: const EdgeInsets.all(8.0),
                           child: Container(
                             child: dashboardButton(context,
-                                title: products,
+                                title: enAttentes,
                                 count: '${data.length}',
-                                icon: icProducts),
+                                icon: icOrders),
                           ));
                     }
                   },
@@ -62,9 +62,9 @@ class HomeScreen extends StatelessWidget {
                           padding: const EdgeInsets.all(8.0),
                           child: Container(
                             child: dashboardButton(context,
-                                title: encours,
+                                title: enCours,
                                 count: '${data.length}',
-                                icon: icOrders),
+                                icon: icProducts),
                           ));
                     }
                   },
@@ -90,7 +90,7 @@ class HomeScreen extends StatelessWidget {
                           padding: const EdgeInsets.all(8.0),
                           child: Container(
                             child: dashboardButton(context,
-                                title: brandName,
+                                title: terminees,
                                 count: '${data.length}',
                                 icon: done),
                           ));

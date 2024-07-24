@@ -8,8 +8,10 @@ const icProducts = 'assets/icons/products.png';
 const icProfile = 'assets/icons/profile.png';
 const icShopSettings = 'assets/icons/shop_setting.png';
 //const icStar = 'assets/icons/star.png';
-const done = 'assets/icons/discount.png';
+const discount = 'assets/icons/discount.png';
 const monney = 'assets/icons/money.png';
+
+const done = 'assets/icons/done.png';
 
 const icVerify = 'assets/icons/varify.png';
 const imgProduct = 'assets/product.jpg';

@@ -1,12 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:elbaraexpress_admin/const/const.dart';
 
 class StoreServices {
-  static getProfile(uid) {
-    return firestore
-        .collection(vendorsCollection)
+  static getProfile(String uid) {
+    return FirebaseFirestore.instance
+        .collection('users')
         .where('id', isEqualTo: uid)
         .get();
   }
+
+
 
   // get messages
   static getAllmessage() {
