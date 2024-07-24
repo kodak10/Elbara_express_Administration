@@ -43,10 +43,14 @@ class LivreurListScreen extends StatelessWidget {
                 leading: CircleAvatar(
                   backgroundImage: NetworkImage(livreur['photoURL']),
                 ),
-                //title: Text(livreur['displayName']),
-                title: Text(livreur['displayName'], style: TextStyle(color: Colors.white)), // Texte en blanc
+                 title: Text(livreur['displayName'],
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 16)),
 
-                subtitle: Text(livreur['email']),
+                subtitle: Text(livreur['email'],
+                                style: TextStyle(
+                                    fontSize: 14, color: Colors.white)),
+
                 trailing: PopupMenuButton<String>(
                   onSelected: (value) {
                     if (value == 'edit') {
