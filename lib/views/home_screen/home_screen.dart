@@ -174,10 +174,10 @@ class HomeScreen extends StatelessWidget {
                                       color: fontGrey,
                                       size: 14.0,
                                     ),
-                                    subtitle: normalText(
-                                      text: "\$ ${data[index]['userNote']}",
-                                      color: darkGrey,
-                                    ),
+                                    // subtitle: normalText(
+                                    //   text: "\$ ${data[index]['userNote']}",
+                                    //   color: darkGrey,
+                                    // ),
                                     trailing:
                                         const Icon(Icons.arrow_forward_ios),
                                     leading: const Icon(

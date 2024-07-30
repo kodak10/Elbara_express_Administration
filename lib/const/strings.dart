@@ -11,7 +11,7 @@ const appname = 'Application Gestionnaire',
     dashboard = 'Tableau de bord',
     order = 'Historique',
     encours = 'En Cours',
-    products = 'Gestions',
+    products = 'Ristournes',
     settings = 'Paramètres',
     upcoming = 'En Cours',
 
