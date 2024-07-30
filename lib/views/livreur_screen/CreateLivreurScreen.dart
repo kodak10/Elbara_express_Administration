@@ -42,14 +42,22 @@ class _CreateLivreurScreenState extends State<CreateLivreurScreen> {
       await docRef.set({
         'displayName': _nameController.text,
         'email': _emailController.text,
-        'phoneNumber': _phoneController.text, // Ajouter le téléphone
+        //'phoneNumber': _phoneController.text, // Ajouter le téléphone
+        'phoneNumber': '+225${_phoneController.text.trim()}',
         'code': _codeController.text, // Ajouter le code
         'photoURL': 'https://firebasestorage.googleapis.com/v0/b/elbaraexpress-9b834.appspot.com/o/images%2Fuser.png?alt=media&token=d2065aab-9369-4c90-9438-f03c15a84fca',
         'role': 'livreur',
+        'verif': false,
         'id': docRef.id, // Ajouter l'ID du document
       });
 
       Get.snackbar('Succès', 'Livreur ajouté');
+
+      _nameController.clear();
+      _emailController.clear();
+      _phoneController.clear();
+      _codeController.clear();
+
     } catch (error) {
       Get.snackbar('Erreur', 'Erreur: $error');
     } finally {

@@ -1,3 +1,4 @@
+import 'package:elbaraexpress_admin/views/codePromo/benefice_code_promo.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
@@ -96,6 +97,20 @@ class _ListPromoCodesScreenState extends State<ListPromoCodesScreen> {
                                   icon: Icon(Icons.delete, color: Colors.red),
                                   onPressed: () => _deletePromoCode(docId),
                                 ),
+
+                                IconButton(
+                                  icon: Icon(Icons.visibility),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => BeneficeCodePromoScreen(codePromo: promoCode['discount']),
+                                      ),
+                                    );
+                                  },
+                                ),
+
+
                               ],
                             ),
                           );
