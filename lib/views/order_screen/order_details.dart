@@ -83,7 +83,7 @@ class _OrderDetailState extends State<OrderDetail> {
     }
   }
 
-    Future<bool> _getRecevoirArgentStatus() async {
+Future<bool> _getRecevoirArgentStatus() async {
   try {
     DocumentSnapshot doc = await FirebaseFirestore.instance
         .collection('orders')
@@ -124,7 +124,7 @@ class _OrderDetailState extends State<OrderDetail> {
                       children: [
                         Padding(
                             padding: getPadding(top: 3),
-                            child: Text("Adresse de ramassage".tr,
+                            child: Text("Adresse de récupération".tr,
                                 overflow: TextOverflow.ellipsis,
                                 textAlign: TextAlign.left,
                                 style: AppStyle.txtBodyGray600)),
@@ -163,9 +163,7 @@ class _OrderDetailState extends State<OrderDetail> {
                                       overflow: TextOverflow.ellipsis,
                                       textAlign: TextAlign.left,
                                       style: AppStyle.txtSFProTextBold20),
-                                  Text(
-                                      data['price']
-                                          .toString(), // Convert integer to string
+                                  Text('${data['price'].toString()} FCFA',
                                       overflow: TextOverflow.ellipsis,
                                       textAlign: TextAlign.left,
                                       style: AppStyle.txtSFProTextBold20)
@@ -198,6 +196,20 @@ class _OrderDetailState extends State<OrderDetail> {
                                 overflow: TextOverflow.ellipsis,
                                 textAlign: TextAlign.left,
                                 style: AppStyle.txtBody)),
+
+                         Padding(
+                            padding: getPadding(top: 21),
+                            child: Text("Date de récupération du colis".tr,
+                                overflow: TextOverflow.ellipsis,
+                                textAlign: TextAlign.left,
+                                style: AppStyle.txtBodyGray600)),
+                        Padding(
+                            padding: getPadding(top: 10, bottom: 0),
+                            child: Text(data['date_ramassage'].toDate().toString(),
+                                overflow: TextOverflow.ellipsis,
+                                textAlign: TextAlign.left,
+                                style: AppStyle.txtBody)),
+
 
                         Padding(
                             padding: getPadding(top: 22),

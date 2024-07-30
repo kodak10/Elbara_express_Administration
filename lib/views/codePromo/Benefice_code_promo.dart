@@ -1,3 +1,5 @@
+import 'package:elbaraexpress_admin/const/custom_button.dart';
+import 'package:elbaraexpress_admin/const/size_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
@@ -241,11 +243,21 @@ Future<void> _generatePdf(List<Map<String, dynamic>> orders) async {
                         style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
                       ),
                     ),
-                    ElevatedButton(
-                      onPressed: () => _generatePdf(orders),
-                      child: Text('Imprimer'),
-                    ),
-                    SizedBox(height: 16),
+                    CustomButton(
+                height: getVerticalSize(54),
+                width: getHorizontalSize(190),
+                text: "Imprimer".tr,
+                margin: getMargin(left: 16),
+                onTap: () {
+                  _generatePdf(orders);
+                },
+              ),
+
+              SizedBox(
+                height: getVerticalSize(16),
+              ),
+              
+                   
                   ],
                 );
               },
