@@ -5,8 +5,8 @@ import 'package:get/get.dart';
 import 'package:elbaraexpress_admin/const/const.dart';
 import 'package:elbaraexpress_admin/views/widgets/loading_indicator.dart';
 import 'package:elbaraexpress_admin/views/widgets/test_style.dart';
-import 'package:elbaraexpress_admin/views/codePromo/EditPromoCodeScreen.dart'; // Assurez-vous que ce fichier est correctement importé
-import 'package:elbaraexpress_admin/views/codePromo/CreatePromoCodeScreen.dart'; // Import du fichier pour créer un code promo
+import 'package:elbaraexpress_admin/views/codePromo/EditPromoCodeScreen.dart';
+import 'package:elbaraexpress_admin/views/codePromo/CreatePromoCodeScreen.dart';
 
 class ListPromoCodesScreen extends StatefulWidget {
   @override
@@ -17,17 +17,41 @@ class _ListPromoCodesScreenState extends State<ListPromoCodesScreen> {
   final RxBool isLoading = false.obs;
 
   Future<void> _deletePromoCode(String docId) async {
-    isLoading(true);
-    try {
-      await FirebaseFirestore.instance
-          .collection('codePromo')
-          .doc(docId)
-          .delete();
-      Get.snackbar('Succès', 'Code promo supprimé');
-    } catch (error) {
-      Get.snackbar('Erreur', 'Erreur: $error');
-    } finally {
-      isLoading(false);
+    // Afficher la boîte de dialogue de confirmation
+    bool? confirm = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Confirmation de suppression'),
+          content: Text('Êtes-vous sûr de vouloir supprimer ce code promo ?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: Text('Annuler'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: Text('Supprimer'),
+            ),
+          ],
+        );
+      },
+    );
+
+    // Si l'utilisateur confirme, procéder à la suppression
+    if (confirm == true) {
+      isLoading(true);
+      try {
+        await FirebaseFirestore.instance
+            .collection('codePromo')
+            .doc(docId)
+            .delete();
+        Get.snackbar('Succès', 'Code promo supprimé');
+      } catch (error) {
+        Get.snackbar('Erreur', 'Erreur: $error');
+      } finally {
+        isLoading(false);
+      }
     }
   }
 
@@ -97,9 +121,8 @@ class _ListPromoCodesScreenState extends State<ListPromoCodesScreen> {
                                   icon: Icon(Icons.delete, color: Colors.red),
                                   onPressed: () => _deletePromoCode(docId),
                                 ),
-
                                 IconButton(
-                                  icon: Icon(Icons.visibility),
+                                  icon: Icon(Icons.visibility, color: Colors.white),
                                   onPressed: () {
                                     Navigator.push(
                                       context,
@@ -109,8 +132,6 @@ class _ListPromoCodesScreenState extends State<ListPromoCodesScreen> {
                                     );
                                   },
                                 ),
-
-
                               ],
                             ),
                           );

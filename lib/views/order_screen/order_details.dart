@@ -83,6 +83,20 @@ class _OrderDetailState extends State<OrderDetail> {
     }
   }
 
+    Future<bool> _getRecevoirArgentStatus() async {
+  try {
+    DocumentSnapshot doc = await FirebaseFirestore.instance
+        .collection('orders')
+        .doc(widget.orderSnapshot.id)
+        .get();
+
+    return doc.get('recevoirArgent') ?? false;
+  } catch (e) {
+    print('Erreur lors de la récupération de recevoirArgent: $e');
+    return false;
+  }
+}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -335,41 +349,86 @@ class _OrderDetailState extends State<OrderDetail> {
                         SizedBox(
                           height: getVerticalSize(8),
                         ),
-                        Padding(
-                            padding: getPadding(top: 21),
-                            child: Text("Nom du livreur".tr,
-                                overflow: TextOverflow.ellipsis,
-                                textAlign: TextAlign.left,
-                                style: AppStyle.txtBodyGray600)),
-                        //      Padding(
-                        // padding: getPadding(top: 10, bottom: 0),
-                        // child: StreamBuilder<DocumentSnapshot>(
-                        //   stream: FirebaseFirestore.instance.collection('users').doc(data['deliveryId']).snapshots(),
-                        //   builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-                        //     if (snapshot.hasError) {
-                        //       return Text("Une erreur s'est produite");
-                        //     }
-
-                        //     if (snapshot.connectionState == ConnectionState.waiting) {
-                        //       return CircularProgressIndicator();
-                        //     }
-
-                        //     if (!snapshot.hasData || snapshot.data!.data() == null) {
-                        //       return Text("Aucun livreur trouvé");
-                        //     }
-
-                        //     var userData = snapshot.data!.data() as Map<String, dynamic>;
-                        //     var driverName = userData['name'];
-
-                        //     return Text(
-                        //       driverName,
-                        //       overflow: TextOverflow.ellipsis,
-                        //       textAlign: TextAlign.left,
-                        //       style: AppStyle.txtBody,
-                        //     );
-                        //   },
-                        // ),
-                        //      )
+                        
+                                FutureBuilder<bool>(
+                        future: _getRecevoirArgentStatus(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return Center(child: CircularProgressIndicator());
+                          } else if (snapshot.hasError) {
+                            return Center(child: Text('Erreur lors de la récupération des données'));
+                          } else if (snapshot.hasData && snapshot.data == true) {
+                            return Align(
+                              alignment: Alignment.centerLeft,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    height: getVerticalSize(16),
+                                  ),
+                                  Divider(
+                                      height: getVerticalSize(1),
+                                      thickness: getVerticalSize(1),
+                                      color: ColorConstant.gray300),
+                                  SizedBox(
+                                    height: getVerticalSize(8),
+                                  ),
+                                  Padding(
+                                      padding: getPadding(top: 22),
+                                      child: Text("Montant à recevoir".tr,
+                                          overflow: TextOverflow.ellipsis,
+                                          textAlign: TextAlign.left,
+                                          style: AppStyle.txtBodyGray600)),
+                                  Padding(
+                                      padding: getPadding(top: 10, bottom: 0),
+                                      child: Text(data['montantRecevoir'],
+                                          overflow: TextOverflow.ellipsis,
+                                          textAlign: TextAlign.left,
+                                          style: AppStyle.txtBody)),
+                                  Padding(
+                                      padding: getPadding(top: 22),
+                                      child: Text("Mode de réception".tr, 
+                                          overflow: TextOverflow.ellipsis,
+                                          textAlign: TextAlign.left,
+                                          style: AppStyle.txtBodyGray600)),
+                                  Padding(
+                                      padding: getPadding(top: 10, bottom: 0),
+                                      child: Text(data['modePaiement'],
+                                          overflow: TextOverflow.ellipsis,
+                                          textAlign: TextAlign.left,
+                                          style: AppStyle.txtBody)),
+                                  Padding(
+                                      padding: getPadding(top: 22),
+                                      child: Text("Numéro de téléphone".tr,
+                                          overflow: TextOverflow.ellipsis,
+                                          textAlign: TextAlign.left,
+                                          style: AppStyle.txtBodyGray600)),
+                                  Padding(
+                                      padding: getPadding(top: 10, bottom: 0),
+                                      child: Text(data['numeroDeReception'],
+                                          overflow: TextOverflow.ellipsis,
+                                          textAlign: TextAlign.left,
+                                          style: AppStyle.txtBody)),
+                                  Padding(
+                                      padding: getPadding(top: 22),
+                                      child: Text("Statut de la transaction".tr,
+                                          overflow: TextOverflow.ellipsis,
+                                          textAlign: TextAlign.left,
+                                          style: AppStyle.txtBodyGray600)),
+                                  Padding(
+                                      padding: getPadding(top: 10, bottom: 0),
+                                      child: Text('',
+                                          overflow: TextOverflow.ellipsis,
+                                          textAlign: TextAlign.left,
+                                          style: AppStyle.txtBody)),
+                                ],
+                              ),
+                            );
+                          } else {
+                            return SizedBox(); // Return an empty widget if `recevoirArgent` is false
+                          }
+                        },
+                      ),
                       ]));
             }
           },
