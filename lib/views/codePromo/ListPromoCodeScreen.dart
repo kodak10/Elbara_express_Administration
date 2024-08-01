@@ -9,6 +9,8 @@ import 'package:elbaraexpress_admin/views/codePromo/EditPromoCodeScreen.dart';
 import 'package:elbaraexpress_admin/views/codePromo/CreatePromoCodeScreen.dart';
 
 class ListPromoCodesScreen extends StatefulWidget {
+  const ListPromoCodesScreen({super.key});
+
   @override
   _ListPromoCodesScreenState createState() => _ListPromoCodesScreenState();
 }
@@ -22,16 +24,15 @@ class _ListPromoCodesScreenState extends State<ListPromoCodesScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Confirmation de suppression'),
-          content: Text('Êtes-vous sûr de vouloir supprimer ce code promo ?'),
+          content: const Text('Êtes-vous sûr de vouloir supprimer ce code promo ?'),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: Text('Annuler'),
+              child: const Text('Annuler'),
             ),
             TextButton(
               onPressed: () => Navigator.of(context).pop(true),
-              child: Text('Supprimer'),
+              child: const Text('Supprimer'),
             ),
           ],
         );
@@ -89,10 +90,10 @@ class _ListPromoCodesScreenState extends State<ListPromoCodesScreen> {
                         return Center(
                             child: Text(
                                 'Une erreur est survenue: ${snapshot.error}',
-                                style: TextStyle(color: Colors.white)));
+                                style: const TextStyle(color: Colors.white)));
                       }
                       if (!snapshot.hasData) {
-                        return Center(child: CircularProgressIndicator());
+                        return const Center(child: CircularProgressIndicator());
                       }
                       final promoCodes = snapshot.data?.docs ?? [];
                       return ListView.builder(
@@ -102,27 +103,27 @@ class _ListPromoCodesScreenState extends State<ListPromoCodesScreen> {
                           final docId = promoCode.id;
                           return ListTile(
                             title: Text(promoCode['discount'],
-                                style: TextStyle(
+                                style: const TextStyle(
                                     color: Colors.white, fontSize: 16)),
                             subtitle: Text(
                                 'Utilisateur: ${promoCode['userName']}',
-                                style: TextStyle(
+                                style: const TextStyle(
                                     fontSize: 14, color: Colors.white)),
                             trailing: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 IconButton(
-                                  icon: Icon(Icons.edit, color: Colors.blue),
+                                  icon: const Icon(Icons.edit, color: Colors.blue),
                                   onPressed: () {
                                     Get.to(PromoCodeEditScreen(docId: docId));
                                   },
                                 ),
                                 IconButton(
-                                  icon: Icon(Icons.delete, color: Colors.red),
+                                  icon: const Icon(Icons.delete, color: Colors.red),
                                   onPressed: () => _deletePromoCode(docId),
                                 ),
                                 IconButton(
-                                  icon: Icon(Icons.visibility, color: Colors.white),
+                                  icon: const Icon(Icons.visibility, color: Colors.white),
                                   onPressed: () {
                                     Navigator.push(
                                       context,

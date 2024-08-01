@@ -163,7 +163,7 @@ class CustomFloatingEditText extends StatelessWidget {
     switch (fontStyle) {
       case FloatingEditTextFontStyle.SFProTextRegular15:
         return TextStyle(
-          color: ColorConstant.black900,
+          color: ColorConstant.whiteA700,
           fontSize: getFontSize(
             15,
           ),
@@ -172,7 +172,7 @@ class CustomFloatingEditText extends StatelessWidget {
         );
       case FloatingEditTextFontStyle.SFProDisplayRegular17:
         return TextStyle(
-          color: ColorConstant.black900,
+          color: ColorConstant.whiteA700,
           fontSize: getFontSize(
             17,
           ),
@@ -181,7 +181,7 @@ class CustomFloatingEditText extends StatelessWidget {
         );
       default:
         return TextStyle(
-          color: ColorConstant.black900,
+          color: ColorConstant.whiteA700,
           fontSize: getFontSize(
             16,
           ),

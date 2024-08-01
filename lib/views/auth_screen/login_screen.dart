@@ -1,4 +1,3 @@
-//
 import '../../const/const.dart';
 import '../../controller/auth_controller.dart';
 import '../home_screen/home.dart';
@@ -6,13 +5,25 @@ import '../widgets/loading_indicator.dart';
 import '../widgets/our_button.dart';
 import '../widgets/test_style.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    var controller = Get.put(AuthController());
+  _LoginPageState createState() => _LoginPageState();
+}
 
+class _LoginPageState extends State<LoginPage> {
+  var controller = Get.put(AuthController());
+  bool isPasswordVisible = false;
+
+  void togglePasswordVisibility() {
+    setState(() {
+      isPasswordVisible = !isPasswordVisible;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: purpleColor,
@@ -23,7 +34,6 @@ class LoginPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               30.heightBox,
-              //normalText(text: welcome, size: 18.0),
               30.heightBox,
               Row(
                 children: [
@@ -58,13 +68,22 @@ class LoginPage extends StatelessWidget {
                       ),
                       10.heightBox,
                       TextFormField(
-                        obscureText: true,
+                        obscureText: !isPasswordVisible,
                         controller: controller.passwordController,
-                        decoration: const InputDecoration(
+                        decoration: InputDecoration(
                           filled: true,
                           fillColor: textfieldGrey,
                           labelText: password,
-                          prefixIcon: Icon(Icons.lock, color: purpleColor),
+                          prefixIcon: const Icon(Icons.lock, color: purpleColor),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              isPasswordVisible
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                              color: purpleColor,
+                            ),
+                            onPressed: togglePasswordVisibility,
+                          ),
                           border: InputBorder.none,
                           hintText: passwordHint,
                         ),
@@ -104,9 +123,6 @@ class LoginPage extends StatelessWidget {
                     .make(),
               ),
               10.heightBox,
-             
-              //const Spacer(),
-              //Center(child: boldText(text: credit)),
               20.heightBox,
             ],
           ),

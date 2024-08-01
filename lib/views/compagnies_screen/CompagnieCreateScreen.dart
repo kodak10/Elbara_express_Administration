@@ -117,6 +117,7 @@ class _CreateCompagnieScreenState extends State<CreateCompagnieScreen> {
                 labelText: "Nom de la Compagnie",
                 hintText: "Entrez le nom",
                 margin: getMargin(top: 31),
+                 
                 prefixConstraints: BoxConstraints(
                     maxHeight: getSize(54),
                     minHeight: getSize(54)),

@@ -27,43 +27,48 @@ class _CreateLivreurScreenState extends State<CreateLivreurScreen> {
   final ImagePicker _picker = ImagePicker();
   XFile? _imageFile;
 
-  Future<void> _addLivreur() async {
-    isLoading(true);
-    try {
-      // Créez un utilisateur dans Firebase Authentication
-      UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: _emailController.text,
-        password: 'ElbaraLivreur',  // Mot de passe par défaut 
-      );
+Future<void> _addLivreur() async {
+  isLoading(true);
+  try {
+    // Créez un utilisateur dans Firebase Authentication
+    UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      email: _emailController.text,
+      password: 'password',  // Mot de passe par défaut
+    );
 
-      // Référence du document avec ID généré automatiquement
-      DocumentReference docRef = FirebaseFirestore.instance.collection('users').doc();
+    // Utilisez l'ID de l'utilisateur créé
+    String uid = userCredential.user!.uid;
 
-      await docRef.set({
-        'displayName': _nameController.text,
-        'email': _emailController.text,
-        //'phoneNumber': _phoneController.text, // Ajouter le téléphone
-        'phoneNumber': '+225${_phoneController.text.trim()}',
-        'code': _codeController.text, // Ajouter le code
-        'photoURL': 'https://firebasestorage.googleapis.com/v0/b/elbaraexpress-9b834.appspot.com/o/images%2Fuser.png?alt=media&token=d2065aab-9369-4c90-9438-f03c15a84fca',
-        'role': 'livreur',
-        'verif': false,
-        'id': docRef.id, // Ajouter l'ID du document
-      });
+    // Référence du document avec l'ID de l'utilisateur
+    DocumentReference docRef = FirebaseFirestore.instance.collection('users').doc(uid);
 
-      Get.snackbar('Succès', 'Livreur ajouté');
+    await docRef.set({
+      'displayName': _nameController.text,
+      'email': _emailController.text,
+      'phoneNumber': '+225${_phoneController.text.trim()}', // Ajouter le téléphone
+      'code': _codeController.text, // Ajouter le code
+      'photoURL': 'https://firebasestorage.googleapis.com/v0/b/elbaraexpress-9b834.appspot.com/o/images%2Fuser.png?alt=media&token=d2065aab-9369-4c90-9438-f03c15a84fca',
+      'role': 'livreur',
+      'verif': false,
+      'id': uid, // Ajouter l'ID de l'utilisateur
+      'fcmToken': '',
+    });
 
-      _nameController.clear();
-      _emailController.clear();
-      _phoneController.clear();
-      _codeController.clear();
+    Get.snackbar('Succès', 'Livreur ajouté');
 
-    } catch (error) {
-      Get.snackbar('Erreur', 'Erreur: $error');
-    } finally {
-      isLoading(false);
-    }
+    _nameController.clear();
+    _emailController.clear();
+    _phoneController.clear();
+    _codeController.clear();
+
+  } catch (error) {
+    Get.snackbar('Erreur', 'Erreur: $error');
+  } finally {
+    isLoading(false);
   }
+}
+
+
 
   @override
   Widget build(BuildContext context) {
