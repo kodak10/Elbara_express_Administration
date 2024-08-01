@@ -173,42 +173,55 @@ class _OrderScreenState extends State<OrderScreen> {
     );
   }
 
-  Stream<QuerySnapshot> _getFilteredOrders() {
-    Query query = _firestore.collection('orders');
+Stream<QuerySnapshot> _getFilteredOrders() {
+  Query query = _firestore.collection('orders');
 
-    if (searchQuery.isNotEmpty) {
-      query = query.where('orderId', isGreaterThanOrEqualTo: searchQuery)
-                   .where('orderId', isLessThanOrEqualTo: '$searchQuery\uf8ff');
-    }
+  // Debugging outputs
+  print("Search Query: $searchQuery");
+  print("Selected Year: $selectedYear");
+  print("Selected Month: $selectedMonth");
+  print("Selected Status: $selectedStatus");
 
-    if (selectedYear != null || selectedMonth != null) {
-      DateTime startDate;
-      DateTime endDate;
-
-      if (selectedYear != null && selectedMonth != null) {
-        startDate = DateTime(int.parse(selectedYear!), int.parse(selectedMonth!), 1);
-        endDate = DateTime(int.parse(selectedYear!), int.parse(selectedMonth!) + 1, 1).subtract(Duration(days: 1));
-      } else if (selectedYear != null) {
-        startDate = DateTime(int.parse(selectedYear!), 1, 1);
-        endDate = DateTime(int.parse(selectedYear!) + 1, 1, 1).subtract(Duration(days: 1));
-      } else {
-        final now = DateTime.now();
-        startDate = DateTime(now.year, int.parse(selectedMonth!), 1);
-        endDate = DateTime(now.year, int.parse(selectedMonth!) + 1, 1).subtract(Duration(days: 1));
-      }
-
-      query = query.where('date', isGreaterThanOrEqualTo: startDate)
-                   .where('date', isLessThanOrEqualTo: endDate);
-    }
-
-    if (selectedStatus != 'all' && selectedStatus != null) {
-      query = query.where('deliveryStatus', isEqualTo: selectedStatus);
-    }
-
-    query = query.orderBy('date', descending: true); // Assurez-vous d'avoir un champ date pour le tri
-
-    return query.snapshots();
+  // Filtrage par numéro de commande
+  if (searchQuery.isNotEmpty) {
+    query = query.where('orderId', isGreaterThanOrEqualTo: searchQuery)
+                 .where('orderId', isLessThanOrEqualTo: '$searchQuery\uf8ff');
   }
+
+  // Filtrage par date
+  if (selectedYear != null && selectedMonth != null) {
+    DateTime startDate = DateTime(int.parse(selectedYear!), int.parse(selectedMonth!), 1);
+    DateTime endDate = DateTime(int.parse(selectedYear!), int.parse(selectedMonth!) + 1, 1).subtract(Duration(days: 1));
+    
+    query = query.where('date', isGreaterThanOrEqualTo: Timestamp.fromDate(startDate))
+                 .where('date', isLessThanOrEqualTo: Timestamp.fromDate(endDate));
+  } else if (selectedYear != null) {
+    DateTime startDate = DateTime(int.parse(selectedYear!), 1, 1);
+    DateTime endDate = DateTime(int.parse(selectedYear!) + 1, 1, 1).subtract(Duration(days: 1));
+    
+    query = query.where('date', isGreaterThanOrEqualTo: Timestamp.fromDate(startDate))
+                 .where('date', isLessThanOrEqualTo: Timestamp.fromDate(endDate));
+  } else if (selectedMonth != null) {
+    final now = DateTime.now();
+    DateTime startDate = DateTime(now.year, int.parse(selectedMonth!), 1);
+    DateTime endDate = DateTime(now.year, int.parse(selectedMonth!) + 1, 1).subtract(Duration(days: 1));
+    
+    query = query.where('date', isGreaterThanOrEqualTo: Timestamp.fromDate(startDate))
+                 .where('date', isLessThanOrEqualTo: Timestamp.fromDate(endDate));
+  }
+
+  // Filtrage par statut de livraison
+  if (selectedStatus != null && selectedStatus != 'all') {
+    query = query.where('deliveryStatus', isEqualTo: selectedStatus);
+  }
+
+  query = query.orderBy('date', descending: true); // Assurez-vous que le champ 'date' est indexé
+
+  return query.snapshots();
+}
+
+
+
 
   String mapDeliveryStatus(String deliveryStatus) {
     switch (deliveryStatus) {
